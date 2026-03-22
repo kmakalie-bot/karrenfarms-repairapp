@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Equipment Repair Request</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --border: #2e2e2e;
+    --accent: #f5a623;
+    --accent2: #e8380d;
+    --text: #f0ede8;
+    --muted: #888;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 2px solid var(--accent);
+    padding: 16px 20px 14px;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-icon {
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .header-text {}
+
+  .header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .header-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+
+  .status-dot.connected { background: var(--success); }
+  .status-dot.error { background: var(--danger); }
+
+  /* MAIN CONTENT */
+  .content {
+    padding: 20px 16px;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  /* QR SCANNER SECTION */
+  .qr-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(245, 166, 35, 0.05);
+  }
+
+  .qr-inner {
+    padding: 14px;
+  }
+
+  .scan-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 3px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .scan-btn:active { transform: scale(0.98); background: #d4901f; }
+  .scan-btn.scanning { background: var(--accent2); color: #fff; }
+
+  .scan-btn svg { width: 22px; height: 22px; }
+
+  #qr-reader {
+    margin-top: 12px;
+    border-radius: 3px;
+    overflow: hidden;
+    display: none;
+  }
+
+  #qr-reader.active { display: block; }
+
+  /* override library styles */
+  #qr-reader video { border-radius: 3px; }
+  #qr-reader__scan_region { background: #000 !important; }
+  #qr-reader__dashboard { display: none !important; }
+
+  .scan-hint {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* FORM FIELDS */
+  .field {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .field:focus-within { border-color: var(--accent); }
+
+  .field-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(245, 166, 35, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .required-star {
+    color: var(--accent2);
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .scanned-badge {
+    background: var(--success);
+    color: #000;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    display: none;
+  }
+
+  .scanned-badge.visible { display: inline-block; }
+
+  input[type="text"],
+  textarea,
+  select {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 16px;
+    padding: 12px 14px;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input[type="text"]::placeholder,
+  textarea::placeholder {
+    color: #444;
+  }
+
+  textarea {
+    resize: none;
+    min-height: 90px;
+    line-height: 1.5;
+  }
+
+  select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23f5a623' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  select option {
+    background: #1a1a1a;
+    color: var(--text);
+  }
+
+  /* URGENCY COLORS */
+  select.urgency-low { color: var(--success); }
+  select.urgency-medium { color: var(--accent); }
+  select.urgency-high { color: #ff8c00; }
+  select.urgency-critical { color: var(--danger); }
+
+  /* URGENCY INDICATOR */
+  .urgency-indicator {
+    height: 3px;
+    width: 0%;
+    transition: width 0.4s ease, background 0.3s;
+  }
+
+  /* PHOTO UPLOAD */
+  .photo-area {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .photo-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: 3px;
+    color: var(--muted);
+    font-size: 14px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .photo-btn:active { border-color: var(--accent); color: var(--accent); }
+
+  #photo-input { display: none; }
+
+  .photo-preview {
+    display: none;
+    position: relative;
+  }
+
+  .photo-preview.visible { display: block; }
+
+  .photo-preview img {
+    width: 100%;
+    border-radius: 3px;
+    display: block;
+    max-height: 200px;
+    object-fit: cover;
+  }
+
+  .photo-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  /* SUBMIT */
+  .submit-btn {
+    width: 100%;
+    padding: 18px;
+    background: var(--accent2);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .submit-btn:active { transform: scale(0.99); background: #c42d09; }
+  .submit-btn:disabled { background: #333; color: var(--muted); cursor: not-allowed; transform: none; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    color: var(--text);
+    padding: 12px 18px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    white-space: nowrap;
+    transition: transform 0.3s ease;
+    z-index: 999;
+    max-width: 90vw;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { border-left-color: var(--success); }
+  .toast.error { border-left-color: var(--danger); }
+
+  /* SPINNER */
+  .spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  .submit-btn.loading .spinner { display: block; }
+  .submit-btn.loading .btn-text { display: none; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* SETUP PANEL */
+  .setup-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--accent2);
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .setup-header {
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .setup-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent2);
+  }
+
+  .setup-toggle {
+    font-size: 18px;
+    color: var(--muted);
+    transition: transform 0.2s;
+    line-height: 1;
+  }
+
+  .setup-toggle.open { transform: rotate(180deg); }
+
+  .setup-body {
+    padding: 14px;
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+
+  .setup-body.open { display: block; }
+
+  .setup-body p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .setup-body a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .setup-body input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 10px 12px;
+    outline: none;
+    margin-bottom: 8px;
+  }
+
+  .setup-body input:focus { border-color: var(--accent); }
+
+  .setup-save-btn {
+    padding: 8px 16px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 3px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
+
+  .steps {
+    counter-reset: step;
+    list-style: none;
+    margin-bottom: 14px;
+  }
+
+  .steps li {
+    counter-increment: step;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    line-height: 1.6;
+    padding: 4px 0 4px 24px;
+    position: relative;
+  }
+
+  .steps li::before {
+    content: counter(step) ".";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .steps li a { color: var(--accent); text-decoration: none; }
+
+  code {
+    background: var(--surface2);
+    padding: 2px 5px;
+    border-radius: 2px;
+    font-size: 10px;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">🔧</div>
+  <div class="header-text">
+    <div class="header-title">Repair Request</div>
+    <div class="header-sub">Equipment Work Order System</div>
+  </div>
+</div>
+
+<div class="status-bar">
+  <div class="status-dot" id="status-dot"></div>
+  <span id="status-text">No sheet connected — tap ⚙ Setup below</span>
+</div>
+
+<div class="content">
+
+  <!-- SETUP PANEL -->
+  <div class="setup-panel">
+    <div class="setup-header" onclick="toggleSetup()">
+      <span class="setup-title">⚙ Google Sheets Setup</span>
+      <span class="setup-toggle" id="setup-toggle">▾</span>
+    </div>
+    <div class="setup-body" id="setup-body">
+      <ol class="steps">
+        <li>Open <a href="https://sheets.google.com" target="_blank">Google Sheets</a> → create a new sheet</li>
+        <li>Add headers: <code>Timestamp</code> <code>Equipment ID</code> <code>Name</code> <code>Issue</code> <code>Urgency</code> <code>Photo</code></li>
+        <li>Go to <strong>Extensions → Apps Script</strong></li>
+        <li>Paste the Apps Script code below and click Deploy → New deployment → Web App → "Anyone"</li>
+        <li>Copy the deployment URL and paste it here:</li>
+      </ol>
+      <p><strong>Apps Script code to paste:</strong></p>
+      <pre style="background:var(--surface2);padding:10px;border-radius:3px;font-size:10px;color:#aaa;overflow-x:auto;margin-bottom:12px;font-family:'IBM Plex Mono',monospace;line-height:1.5">function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    data.timestamp, data.equipmentId,
+    data.equipmentName, data.issue,
+    data.urgency, data.photo || ""
+  ]);
+  return ContentService.createTextOutput(
+    JSON.stringify({result:"success"})
+  ).setMimeType(ContentService.MimeType.JSON);
+}</pre>
+      <input type="url" id="sheet-url-input" placeholder="https://script.google.com/macros/s/..." />
+      <button class="setup-save-btn" onclick="saveSheetUrl()">Save URL</button>
+    </div>
+  </div>
+
+  <!-- QR SCANNER -->
+  <div class="qr-section">
+    <div class="section-label">📷 QR Code Scanner</div>
+    <div class="qr-inner">
+      <button class="scan-btn" id="scan-btn" onclick="toggleScanner()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="3" y="3" width="5" height="5" rx="1"/>
+          <rect x="16" y="3" width="5" height="5" rx="1"/>
+          <rect x="3" y="16" width="5" height="5" rx="1"/>
+          <line x1="16" y1="16" x2="16" y2="21"/>
+          <line x1="16" y1="16" x2="21" y2="16"/>
+          <line x1="21" y1="21" x2="16" y2="21"/>
+          <line x1="21" y1="21" x2="21" y2="16"/>
+          <line x1="9" y1="12" x2="15" y2="12"/>
+          <line x1="12" y1="9" x2="12" y2="15"/>
+        </svg>
+        <span id="scan-btn-text">SCAN QR CODE</span>
+      </button>
+      <div id="qr-reader"></div>
+      <div class="scan-hint" id="scan-hint" style="display:none">Point camera at QR code on equipment</div>
+    </div>
+  </div>
+
+  <!-- EQUIPMENT ID -->
+  <div class="field">
+    <div class="field-label">
+      <span>Equipment ID <span class="required-star">*</span></span>
+      <span class="scanned-badge" id="scanned-badge">SCANNED ✓</span>
+    </div>
+    <input type="text" id="equipment-id" placeholder="e.g. TRK-042 or scan QR above" autocomplete="off" />
+  </div>
+
+  <!-- EQUIPMENT NAME -->
+  <div class="field">
+    <div class="field-label">Equipment Name <span class="required-star">*</span></div>
+    <input type="text" id="equipment-name" placeholder="e.g. John Deere 8R, Grain Auger..." autocomplete="off" />
+  </div>
+
+  <!-- ISSUE -->
+  <div class="field">
+    <div class="field-label">What Needs Repaired? <span class="required-star">*</span></div>
+    <textarea id="issue" placeholder="Describe the problem in detail..."></textarea>
+  </div>
+
+  <!-- URGENCY -->
+  <div class="field">
+    <div class="field-label">How Urgent Is It? <span class="required-star">*</span></div>
+    <div class="urgency-indicator" id="urgency-indicator"></div>
+    <select id="urgency" onchange="updateUrgency()">
+      <option value="">— Select urgency —</option>
+      <option value="Low — Routine">🟢 Low — Routine (can wait)</option>
+      <option value="Medium — Soon">🟡 Medium — Soon (within week)</option>
+      <option value="High — Urgent">🟠 High — Urgent (within 24hrs)</option>
+      <option value="Critical — Down">🔴 Critical — Equipment Down Now</option>
+    </select>
+  </div>
+
+  <!-- PHOTO -->
+  <div class="field">
+    <div class="field-label">Upload a Photo</div>
+    <div class="photo-area">
+      <div class="photo-btn" onclick="document.getElementById('photo-input').click()">
+        📸 Take or Choose Photo
+      </div>
+      <input type="file" id="photo-input" accept="image/*" capture="environment" onchange="handlePhoto(event)" />
+      <div class="photo-preview" id="photo-preview">
+        <img id="photo-img" src="" alt="Preview" />
+        <button class="photo-remove" onclick="removePhoto()">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <button class="submit-btn" id="submit-btn" onclick="submitForm()">
+    <div class="spinner"></div>
+    <span class="btn-text">SUBMIT WORK ORDER</span>
+  </button>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────
+let SHEET_URL = localStorage.getItem('sheetUrl') || '';
+let photoBase64 = '';
+let scanner = null;
+let scannerActive = false;
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+window.onload = () => {
+  if (SHEET_URL) {
+    document.getElementById('sheet-url-input').value = SHEET_URL;
+    updateStatusBar(true);
+  }
+};
+
+function updateStatusBar(connected) {
+  const dot = document.getElementById('status-dot');
+  const text = document.getElementById('status-text');
+  if (connected && SHEET_URL) {
+    dot.className = 'status-dot connected';
+    text.textContent = 'Connected to Google Sheet ✓';
+  } else {
+    dot.className = 'status-dot error';
+    text.textContent = 'No sheet connected — tap ⚙ Setup above';
+  }
+}
+
+// ─── SETUP ────────────────────────────────────────────────────────────────
+function toggleSetup() {
+  const body = document.getElementById('setup-body');
+  const toggle = document.getElementById('setup-toggle');
+  body.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+
+function saveSheetUrl() {
+  const val = document.getElementById('sheet-url-input').value.trim();
+  if (!val.startsWith('https://script.google.com')) {
+    showToast('❌ Paste your Apps Script deployment URL', 'error');
+    return;
+  }
+  SHEET_URL = val;
+  localStorage.setItem('sheetUrl', SHEET_URL);
+  updateStatusBar(true);
+  document.getElementById('setup-body').classList.remove('open');
+  document.getElementById('setup-toggle').classList.remove('open');
+  showToast('✓ Sheet URL saved!', 'success');
+}
+
+// ─── QR SCANNER ───────────────────────────────────────────────────────────
+async function toggleScanner() {
+  if (scannerActive) {
+    stopScanner();
+    return;
+  }
+
+  const readerEl = document.getElementById('qr-reader');
+  readerEl.classList.add('active');
+  document.getElementById('scan-hint').style.display = 'block';
+  const btn = document.getElementById('scan-btn');
+  btn.classList.add('scanning');
+  document.getElementById('scan-btn-text').textContent = 'STOP SCANNING';
+  scannerActive = true;
+
+  try {
+    scanner = new Html5Qrcode("qr-reader");
+    await scanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 220, height: 220 } },
+      (decodedText) => {
+        document.getElementById('equipment-id').value = decodedText;
+        document.getElementById('scanned-badge').classList.add('visible');
+        stopScanner();
+        showToast('✓ QR scanned: ' + decodedText, 'success');
+      },
+      () => {}
+    );
+  } catch (err) {
+    showToast('Camera error: ' + err, 'error');
+    stopScanner();
+  }
+}
+
+async function stopScanner() {
+  if (scanner) {
+    try { await scanner.stop(); scanner.clear(); } catch(e) {}
+    scanner = null;
+  }
+  scannerActive = false;
+  document.getElementById('qr-reader').classList.remove('active');
+  document.getElementById('scan-hint').style.display = 'none';
+  const btn = document.getElementById('scan-btn');
+  btn.classList.remove('scanning');
+  document.getElementById('scan-btn-text').textContent = 'SCAN QR CODE';
+}
+
+// ─── URGENCY ──────────────────────────────────────────────────────────────
+function updateUrgency() {
+  const sel = document.getElementById('urgency');
+  const ind = document.getElementById('urgency-indicator');
+  const val = sel.value;
+  sel.className = '';
+  if (val.includes('Low')) {
+    ind.style.cssText = 'width:25%;background:#2ecc71;height:3px;transition:width .4s,background .3s;';
+    sel.className = 'urgency-low';
+  } else if (val.includes('Medium')) {
+    ind.style.cssText = 'width:50%;background:#f5a623;height:3px;transition:width .4s,background .3s;';
+    sel.className = 'urgency-medium';
+  } else if (val.includes('High')) {
+    ind.style.cssText = 'width:75%;background:#ff8c00;height:3px;transition:width .4s,background .3s;';
+    sel.className = 'urgency-high';
+  } else if (val.includes('Critical')) {
+    ind.style.cssText = 'width:100%;background:#e74c3c;height:3px;transition:width .4s,background .3s;';
+    sel.className = 'urgency-critical';
+  } else {
+    ind.style.cssText = 'width:0%;height:3px;transition:width .4s,background .3s;';
+  }
+}
+
+// ─── PHOTO ────────────────────────────────────────────────────────────────
+function handlePhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    photoBase64 = e.target.result;
+    document.getElementById('photo-img').src = photoBase64;
+    document.getElementById('photo-preview').classList.add('visible');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto() {
+  photoBase64 = '';
+  document.getElementById('photo-img').src = '';
+  document.getElementById('photo-preview').classList.remove('visible');
+  document.getElementById('photo-input').value = '';
+}
+
+// ─── SUBMIT ───────────────────────────────────────────────────────────────
+async function submitForm() {
+  const id = document.getElementById('equipment-id').value.trim();
+  const name = document.getElementById('equipment-name').value.trim();
+  const issue = document.getElementById('issue').value.trim();
+  const urgency = document.getElementById('urgency').value;
+
+  if (!id) { showToast('⚠ Equipment ID is required', 'error'); return; }
+  if (!name) { showToast('⚠ Equipment Name is required', 'error'); return; }
+  if (!issue) { showToast('⚠ Please describe what needs repaired', 'error'); return; }
+  if (!urgency) { showToast('⚠ Please select urgency level', 'error'); return; }
+
+  if (!SHEET_URL) {
+    showToast('⚠ Set up your Google Sheet URL first (tap ⚙)', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  const payload = {
+    timestamp: new Date().toLocaleString(),
+    equipmentId: id,
+    equipmentName: name,
+    issue: issue,
+    urgency: urgency,
+    photo: photoBase64 ? '[Photo attached - ' + Math.round(photoBase64.length / 1024) + 'KB]' : ''
+  };
+
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    showToast('✓ Work order submitted!', 'success');
+    resetForm();
+  } catch (err) {
+    showToast('❌ Submission failed. Check URL and connection.', 'error');
+  }
+
+  btn.classList.remove('loading');
+  btn.disabled = false;
+}
+
+function resetForm() {
+  document.getElementById('equipment-id').value = '';
+  document.getElementById('equipment-name').value = '';
+  document.getElementById('issue').value = '';
+  document.getElementById('urgency').value = '';
+  document.getElementById('scanned-badge').classList.remove('visible');
+  updateUrgency();
+  removePhoto();
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => t.classList.add('show'));
+  });
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
