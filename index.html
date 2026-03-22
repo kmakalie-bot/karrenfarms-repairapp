@@ -545,12 +545,17 @@ async function toggleScanner() {
       { facingMode: "environment" },
       { fps: 10, qrbox: { width: 220, height: 220 } },
       (decodedText) => {
-        // Try to parse as our URL format
-        try {
-          const url = new URL(decodedText);
-          const params = new URLSearchParams(url.search);
-          const scannedId = params.get('id');
-          const scannedName = params.get('name');
+        // Extract id and name params from URL regardless of format
+        let scannedId = null;
+        let scannedName = null;
+
+        // Try extracting with regex first (most reliable across browsers)
+        const idMatch = decodedText.match(/[?&]id=([^&]+)/);
+        const nameMatch = decodedText.match(/[?&]name=([^&]+)/);
+        if (idMatch) scannedId = decodeURIComponent(idMatch[1]);
+        if (nameMatch) scannedName = decodeURIComponent(nameMatch[1]);
+
+        if (scannedId || scannedName) {
           if (scannedId) {
             document.getElementById('equipment-id').value = scannedId;
             document.getElementById('field-id').classList.add('autofilled');
@@ -559,26 +564,21 @@ async function toggleScanner() {
             document.getElementById('equipment-name').value = scannedName;
             document.getElementById('field-name').classList.add('autofilled');
           }
-          if (scannedId || scannedName) {
-            document.getElementById('scanned-badge').classList.add('visible');
-            const banner = document.getElementById('autofill-banner');
-            const sub = document.getElementById('autofill-banner-sub');
-            banner.classList.add('visible');
-            sub.textContent = `${scannedId || ''}${scannedId && scannedName ? ' — ' : ''}${scannedName || ''}`;
-            showToast('✓ Equipment loaded: ' + (scannedId || scannedName), 'success');
-          } else {
-            // Plain text QR — just fill ID field
-            document.getElementById('equipment-id').value = decodedText;
-            document.getElementById('scanned-badge').classList.add('visible');
-            showToast('✓ QR scanned: ' + decodedText, 'success');
-          }
-        } catch(e) {
-          // Not a URL — fill as plain ID
+          document.getElementById('scanned-badge').classList.add('visible');
+          const banner = document.getElementById('autofill-banner');
+          const sub = document.getElementById('autofill-banner-sub');
+          banner.classList.add('visible');
+          sub.textContent = `${scannedId || ''}${scannedId && scannedName ? ' — ' : ''}${scannedName || ''}`;
+          showToast('✓ Equipment loaded: ' + (scannedId || scannedName), 'success');
+          stopScanner();
+        } else {
+          // Not our URL format — just fill ID with raw text
           document.getElementById('equipment-id').value = decodedText;
           document.getElementById('scanned-badge').classList.add('visible');
           showToast('✓ QR scanned: ' + decodedText, 'success');
+          stopScanner();
         }
-        stopScanner();
+
       },
       () => {}
     );
