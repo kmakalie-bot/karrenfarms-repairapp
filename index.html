@@ -341,36 +341,6 @@
 
 <div class="content">
 
-  <!-- SETUP PANEL -->
-  <div class="setup-panel">
-    <div class="setup-header" onclick="toggleSetup()">
-      <span class="setup-title">⚙ Google Sheets Setup</span>
-      <span class="setup-toggle" id="setup-toggle">▾</span>
-    </div>
-    <div class="setup-body" id="setup-body">
-      <ol class="steps">
-        <li>Open <a href="https://sheets.google.com" target="_blank" style="color:var(--accent)">Google Sheets</a> → create a new sheet</li>
-        <li>Add headers: <code>Timestamp</code> <code>Equipment ID</code> <code>Name</code> <code>Issue</code> <code>Urgency</code> <code>Photo</code></li>
-        <li>Go to <strong>Extensions → Apps Script</strong></li>
-        <li>Paste the script below, Deploy → Web App → "Anyone", copy the URL</li>
-      </ol>
-      <pre style="background:var(--surface2);padding:10px;border-radius:3px;font-size:10px;color:#aaa;overflow-x:auto;margin-bottom:12px;font-family:'IBM Plex Mono',monospace;line-height:1.5">function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var data = JSON.parse(e.postData.contents);
-  sheet.appendRow([
-    data.timestamp, data.equipmentId,
-    data.equipmentName, data.issue,
-    data.urgency, data.photo || ""
-  ]);
-  return ContentService.createTextOutput(
-    JSON.stringify({result:"success"})
-  ).setMimeType(ContentService.MimeType.JSON);
-}</pre>
-      <input type="url" id="sheet-url-input" placeholder="https://script.google.com/macros/s/..." />
-      <button class="setup-save-btn" onclick="saveSheetUrl()">Save URL</button>
-    </div>
-  </div>
-
   <!-- AUTO-FILL BANNER (shown when QR code was scanned) -->
   <div class="autofill-banner" id="autofill-banner">
     <div class="autofill-banner-title">✓ Equipment Loaded from QR Code</div>
@@ -461,17 +431,14 @@
 
 <script>
 // ─── CONFIG ───────────────────────────────────────────────────────────────
-let SHEET_URL = localStorage.getItem('sheetUrl') || '';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzro5b2hnPILEXE-7AMKdgVVyJEmdAXHYC2UwGa-ztCCfrKpkP0SlJe01Izx2EBOWU1FA/exec';
 let photoBase64 = '';
 let scanner = null;
 let scannerActive = false;
 
 // ─── INIT — check for URL params from QR code ─────────────────────────────
 window.onload = () => {
-  if (SHEET_URL) {
-    document.getElementById('sheet-url-input').value = SHEET_URL;
-    updateStatusBar(true);
-  }
+  updateStatusBar(true);
 
   // Read ?id=XXX&name=YYY from URL (set by QR codes)
   const params = new URLSearchParams(window.location.search);
@@ -497,35 +464,9 @@ window.onload = () => {
   }
 };
 
-function updateStatusBar(connected) {
-  const dot = document.getElementById('status-dot');
-  const text = document.getElementById('status-text');
-  if (connected && SHEET_URL) {
-    dot.className = 'status-dot connected';
-    text.textContent = 'Connected to Google Sheet ✓';
-  } else {
-    dot.className = 'status-dot error';
-    text.textContent = 'No sheet connected — tap ⚙ Setup above';
-  }
-}
-
-// ─── SETUP ────────────────────────────────────────────────────────────────
-function toggleSetup() {
-  document.getElementById('setup-body').classList.toggle('open');
-  document.getElementById('setup-toggle').classList.toggle('open');
-}
-
-function saveSheetUrl() {
-  const val = document.getElementById('sheet-url-input').value.trim();
-  if (!val.startsWith('https://script.google.com')) {
-    showToast('❌ Paste your Apps Script deployment URL', 'error'); return;
-  }
-  SHEET_URL = val;
-  localStorage.setItem('sheetUrl', SHEET_URL);
-  updateStatusBar(true);
-  document.getElementById('setup-body').classList.remove('open');
-  document.getElementById('setup-toggle').classList.remove('open');
-  showToast('✓ Sheet URL saved!', 'success');
+function updateStatusBar() {
+  document.getElementById('status-dot').className = 'status-dot connected';
+  document.getElementById('status-text').textContent = 'Connected to Karren Farms Google Sheet ✓';
 }
 
 // ─── QR SCANNER ───────────────────────────────────────────────────────────
@@ -646,7 +587,6 @@ async function submitForm() {
   if (!name) { showToast('⚠ Equipment Name is required', 'error'); return; }
   if (!issue) { showToast('⚠ Please describe what needs repaired', 'error'); return; }
   if (!urgency) { showToast('⚠ Please select urgency level', 'error'); return; }
-  if (!SHEET_URL) { showToast('⚠ Set up your Google Sheet URL first (tap ⚙)', 'error'); return; }
 
   const btn = document.getElementById('submit-btn');
   btn.classList.add('loading');
