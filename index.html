@@ -30,7 +30,6 @@
     padding-bottom: 40px;
   }
 
-  /* HEADER */
   .header {
     background: var(--surface);
     border-bottom: 2px solid var(--accent);
@@ -43,13 +42,7 @@
     z-index: 100;
   }
 
-  .header-icon {
-    font-size: 28px;
-    line-height: 1;
-  }
-
-  .header-text {}
-
+  .header-icon { font-size: 28px; line-height: 1; }
   .header-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 26px;
@@ -57,7 +50,6 @@
     color: var(--accent);
     line-height: 1;
   }
-
   .header-sub {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
@@ -66,7 +58,30 @@
     text-transform: uppercase;
   }
 
-  /* STATUS BAR */
+  /* AUTO-FILL BANNER */
+  .autofill-banner {
+    background: linear-gradient(135deg, rgba(46,204,113,0.15), rgba(46,204,113,0.05));
+    border: 1px solid var(--success);
+    border-left: 4px solid var(--success);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .autofill-banner.visible { display: block; }
+  .autofill-banner-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--success);
+    margin-bottom: 2px;
+  }
+  .autofill-banner-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
   .status-bar {
     background: var(--surface2);
     border-bottom: 1px solid var(--border);
@@ -78,25 +93,16 @@
     font-size: 11px;
     color: var(--muted);
   }
-
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--muted);
-  }
-
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
   .status-dot.connected { background: var(--success); }
   .status-dot.error { background: var(--danger); }
 
-  /* MAIN CONTENT */
   .content {
     padding: 20px 16px;
     max-width: 540px;
     margin: 0 auto;
   }
 
-  /* QR SCANNER SECTION */
   .qr-section {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -116,9 +122,7 @@
     background: rgba(245, 166, 35, 0.05);
   }
 
-  .qr-inner {
-    padding: 14px;
-  }
+  .qr-inner { padding: 14px; }
 
   .scan-btn {
     width: 100%;
@@ -138,24 +142,12 @@
     transition: background 0.15s, transform 0.1s;
     -webkit-tap-highlight-color: transparent;
   }
-
   .scan-btn:active { transform: scale(0.98); background: #d4901f; }
   .scan-btn.scanning { background: var(--accent2); color: #fff; }
-
   .scan-btn svg { width: 22px; height: 22px; }
 
-  #qr-reader {
-    margin-top: 12px;
-    border-radius: 3px;
-    overflow: hidden;
-    display: none;
-  }
-
+  #qr-reader { margin-top: 12px; border-radius: 3px; overflow: hidden; display: none; }
   #qr-reader.active { display: block; }
-
-  /* override library styles */
-  #qr-reader video { border-radius: 3px; }
-  #qr-reader__scan_region { background: #000 !important; }
   #qr-reader__dashboard { display: none !important; }
 
   .scan-hint {
@@ -166,7 +158,6 @@
     font-family: 'IBM Plex Mono', monospace;
   }
 
-  /* FORM FIELDS */
   .field {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -175,8 +166,8 @@
     margin-bottom: 12px;
     transition: border-color 0.2s;
   }
-
   .field:focus-within { border-color: var(--accent); }
+  .field.autofilled { border-color: var(--success); }
 
   .field-label {
     font-family: 'IBM Plex Mono', monospace;
@@ -192,11 +183,7 @@
     align-items: center;
   }
 
-  .required-star {
-    color: var(--accent2);
-    font-size: 14px;
-    line-height: 1;
-  }
+  .required-star { color: var(--accent2); font-size: 14px; line-height: 1; }
 
   .scanned-badge {
     background: var(--success);
@@ -208,12 +195,9 @@
     letter-spacing: 1px;
     display: none;
   }
-
   .scanned-badge.visible { display: inline-block; }
 
-  input[type="text"],
-  textarea,
-  select {
+  input[type="text"], textarea, select {
     width: 100%;
     background: transparent;
     border: none;
@@ -225,18 +209,8 @@
     -webkit-appearance: none;
     appearance: none;
   }
-
-  input[type="text"]::placeholder,
-  textarea::placeholder {
-    color: #444;
-  }
-
-  textarea {
-    resize: none;
-    min-height: 90px;
-    line-height: 1.5;
-  }
-
+  input[type="text"]::placeholder, textarea::placeholder { color: #444; }
+  textarea { resize: none; min-height: 90px; line-height: 1.5; }
   select {
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23f5a623' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
@@ -244,37 +218,17 @@
     background-position: right 14px center;
     padding-right: 36px;
   }
-
-  select option {
-    background: #1a1a1a;
-    color: var(--text);
-  }
-
-  /* URGENCY COLORS */
+  select option { background: #1a1a1a; color: var(--text); }
   select.urgency-low { color: var(--success); }
   select.urgency-medium { color: var(--accent); }
   select.urgency-high { color: #ff8c00; }
   select.urgency-critical { color: var(--danger); }
 
-  /* URGENCY INDICATOR */
-  .urgency-indicator {
-    height: 3px;
-    width: 0%;
-    transition: width 0.4s ease, background 0.3s;
-  }
+  .urgency-indicator { height: 3px; width: 0%; transition: width 0.4s ease, background 0.3s; }
 
-  /* PHOTO UPLOAD */
-  .photo-area {
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
+  .photo-area { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
   .photo-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex; align-items: center; gap: 8px;
     padding: 10px 14px;
     background: var(--surface2);
     border: 1px dashed var(--border);
@@ -285,227 +239,89 @@
     -webkit-tap-highlight-color: transparent;
     transition: border-color 0.2s, color 0.2s;
   }
-
   .photo-btn:active { border-color: var(--accent); color: var(--accent); }
-
   #photo-input { display: none; }
-
-  .photo-preview {
-    display: none;
-    position: relative;
-  }
-
+  .photo-preview { display: none; position: relative; }
   .photo-preview.visible { display: block; }
-
-  .photo-preview img {
-    width: 100%;
-    border-radius: 3px;
-    display: block;
-    max-height: 200px;
-    object-fit: cover;
-  }
-
+  .photo-preview img { width: 100%; border-radius: 3px; display: block; max-height: 200px; object-fit: cover; }
   .photo-remove {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(0,0,0,0.7);
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(0,0,0,0.7); color: #fff;
+    border: none; border-radius: 50%;
+    width: 28px; height: 28px; font-size: 16px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;
   }
 
-  /* SUBMIT */
   .submit-btn {
-    width: 100%;
-    padding: 18px;
-    background: var(--accent2);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
+    width: 100%; padding: 18px;
+    background: var(--accent2); color: #fff;
+    border: none; border-radius: 4px;
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 24px;
-    letter-spacing: 3px;
-    cursor: pointer;
-    margin-top: 8px;
+    font-size: 24px; letter-spacing: 3px;
+    cursor: pointer; margin-top: 8px;
     transition: background 0.15s, transform 0.1s;
     -webkit-tap-highlight-color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
   }
-
   .submit-btn:active { transform: scale(0.99); background: #c42d09; }
   .submit-btn:disabled { background: #333; color: var(--muted); cursor: not-allowed; transform: none; }
 
-  /* TOAST */
   .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--surface);
-    border: 1px solid var(--border);
+    position: fixed; bottom: 24px;
+    left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--surface); border: 1px solid var(--border);
     border-left: 3px solid var(--accent);
-    color: var(--text);
-    padding: 12px 18px;
-    border-radius: 4px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    white-space: nowrap;
-    transition: transform 0.3s ease;
-    z-index: 999;
-    max-width: 90vw;
-    white-space: normal;
-    text-align: center;
+    color: var(--text); padding: 12px 18px;
+    border-radius: 4px; font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; transition: transform 0.3s ease;
+    z-index: 999; max-width: 90vw; text-align: center;
   }
-
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.success { border-left-color: var(--success); }
   .toast.error { border-left-color: var(--danger); }
 
-  /* SPINNER */
   .spinner {
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    display: none;
+    width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+    border-radius: 50%; animation: spin 0.7s linear infinite; display: none;
   }
-
   .submit-btn.loading .spinner { display: block; }
   .submit-btn.loading .btn-text { display: none; }
-
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* SETUP PANEL */
   .setup-panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 2px solid var(--accent2);
-    border-radius: 4px;
-    margin-bottom: 20px;
-    overflow: hidden;
+    background: var(--surface); border: 1px solid var(--border);
+    border-top: 2px solid var(--accent2); border-radius: 4px; margin-bottom: 20px; overflow: hidden;
   }
-
   .setup-header {
-    padding: 12px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
+    padding: 12px 14px; display: flex; justify-content: space-between;
+    align-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
-
-  .setup-title {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--accent2);
-  }
-
-  .setup-toggle {
-    font-size: 18px;
-    color: var(--muted);
-    transition: transform 0.2s;
-    line-height: 1;
-  }
-
+  .setup-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent2); }
+  .setup-toggle { font-size: 18px; color: var(--muted); transition: transform 0.2s; line-height: 1; }
   .setup-toggle.open { transform: rotate(180deg); }
-
-  .setup-body {
-    padding: 14px;
-    border-top: 1px solid var(--border);
-    display: none;
-  }
-
+  .setup-body { padding: 14px; border-top: 1px solid var(--border); display: none; }
   .setup-body.open { display: block; }
-
-  .setup-body p {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 10px;
-    font-family: 'IBM Plex Mono', monospace;
-  }
-
-  .setup-body a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
+  .setup-body p { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; font-family: 'IBM Plex Mono', monospace; }
   .setup-body input {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    padding: 10px 12px;
-    outline: none;
-    margin-bottom: 8px;
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 3px; color: var(--text); font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; padding: 10px 12px; outline: none; margin-bottom: 8px;
   }
-
   .setup-body input:focus { border-color: var(--accent); }
-
   .setup-save-btn {
-    padding: 8px 16px;
-    background: var(--accent);
-    color: #000;
-    border: none;
-    border-radius: 3px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 16px;
-    letter-spacing: 1px;
-    cursor: pointer;
+    padding: 8px 16px; background: var(--accent); color: #000;
+    border: none; border-radius: 3px; font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px; letter-spacing: 1px; cursor: pointer;
   }
-
-  .steps {
-    counter-reset: step;
-    list-style: none;
-    margin-bottom: 14px;
-  }
-
+  .steps { counter-reset: step; list-style: none; margin-bottom: 14px; }
   .steps li {
-    counter-increment: step;
-    font-size: 11px;
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-    line-height: 1.6;
-    padding: 4px 0 4px 24px;
-    position: relative;
+    counter-increment: step; font-size: 11px; color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace; line-height: 1.6;
+    padding: 4px 0 4px 24px; position: relative;
   }
-
-  .steps li::before {
-    content: counter(step) ".";
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .steps li a { color: var(--accent); text-decoration: none; }
-
-  code {
-    background: var(--surface2);
-    padding: 2px 5px;
-    border-radius: 2px;
-    font-size: 10px;
-    color: var(--accent);
-  }
+  .steps li::before { content: counter(step) "."; position: absolute; left: 0; color: var(--accent); font-weight: 600; }
+  code { background: var(--surface2); padding: 2px 5px; border-radius: 2px; font-size: 10px; color: var(--accent); }
 </style>
 </head>
 <body>
@@ -514,7 +330,7 @@
   <div class="header-icon">🔧</div>
   <div class="header-text">
     <div class="header-title">Repair Request</div>
-    <div class="header-sub">Equipment Work Order System</div>
+    <div class="header-sub">Karren Farms Equipment</div>
   </div>
 </div>
 
@@ -533,13 +349,11 @@
     </div>
     <div class="setup-body" id="setup-body">
       <ol class="steps">
-        <li>Open <a href="https://sheets.google.com" target="_blank">Google Sheets</a> → create a new sheet</li>
+        <li>Open <a href="https://sheets.google.com" target="_blank" style="color:var(--accent)">Google Sheets</a> → create a new sheet</li>
         <li>Add headers: <code>Timestamp</code> <code>Equipment ID</code> <code>Name</code> <code>Issue</code> <code>Urgency</code> <code>Photo</code></li>
         <li>Go to <strong>Extensions → Apps Script</strong></li>
-        <li>Paste the Apps Script code below and click Deploy → New deployment → Web App → "Anyone"</li>
-        <li>Copy the deployment URL and paste it here:</li>
+        <li>Paste the script below, Deploy → Web App → "Anyone", copy the URL</li>
       </ol>
-      <p><strong>Apps Script code to paste:</strong></p>
       <pre style="background:var(--surface2);padding:10px;border-radius:3px;font-size:10px;color:#aaa;overflow-x:auto;margin-bottom:12px;font-family:'IBM Plex Mono',monospace;line-height:1.5">function doPost(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   var data = JSON.parse(e.postData.contents);
@@ -555,6 +369,12 @@
       <input type="url" id="sheet-url-input" placeholder="https://script.google.com/macros/s/..." />
       <button class="setup-save-btn" onclick="saveSheetUrl()">Save URL</button>
     </div>
+  </div>
+
+  <!-- AUTO-FILL BANNER (shown when QR code was scanned) -->
+  <div class="autofill-banner" id="autofill-banner">
+    <div class="autofill-banner-title">✓ Equipment Loaded from QR Code</div>
+    <div class="autofill-banner-sub" id="autofill-banner-sub"></div>
   </div>
 
   <!-- QR SCANNER -->
@@ -581,7 +401,7 @@
   </div>
 
   <!-- EQUIPMENT ID -->
-  <div class="field">
+  <div class="field" id="field-id">
     <div class="field-label">
       <span>Equipment ID <span class="required-star">*</span></span>
       <span class="scanned-badge" id="scanned-badge">SCANNED ✓</span>
@@ -590,7 +410,7 @@
   </div>
 
   <!-- EQUIPMENT NAME -->
-  <div class="field">
+  <div class="field" id="field-name">
     <div class="field-label">Equipment Name <span class="required-star">*</span></div>
     <input type="text" id="equipment-name" placeholder="e.g. John Deere 8R, Grain Auger..." autocomplete="off" />
   </div>
@@ -646,11 +466,34 @@ let photoBase64 = '';
 let scanner = null;
 let scannerActive = false;
 
-// ─── INIT ─────────────────────────────────────────────────────────────────
+// ─── INIT — check for URL params from QR code ─────────────────────────────
 window.onload = () => {
   if (SHEET_URL) {
     document.getElementById('sheet-url-input').value = SHEET_URL;
     updateStatusBar(true);
+  }
+
+  // Read ?id=XXX&name=YYY from URL (set by QR codes)
+  const params = new URLSearchParams(window.location.search);
+  const qrId = params.get('id');
+  const qrName = params.get('name');
+
+  if (qrId) {
+    document.getElementById('equipment-id').value = qrId;
+    document.getElementById('scanned-badge').classList.add('visible');
+    document.getElementById('field-id').classList.add('autofilled');
+  }
+  if (qrName) {
+    document.getElementById('equipment-name').value = qrName;
+    document.getElementById('field-name').classList.add('autofilled');
+  }
+  if (qrId || qrName) {
+    const banner = document.getElementById('autofill-banner');
+    const sub = document.getElementById('autofill-banner-sub');
+    banner.classList.add('visible');
+    sub.textContent = `${qrId || ''}${qrId && qrName ? ' — ' : ''}${qrName || ''}`;
+    // Clean URL so refreshing doesn't re-trigger
+    window.history.replaceState({}, document.title, window.location.pathname);
   }
 };
 
@@ -668,17 +511,14 @@ function updateStatusBar(connected) {
 
 // ─── SETUP ────────────────────────────────────────────────────────────────
 function toggleSetup() {
-  const body = document.getElementById('setup-body');
-  const toggle = document.getElementById('setup-toggle');
-  body.classList.toggle('open');
-  toggle.classList.toggle('open');
+  document.getElementById('setup-body').classList.toggle('open');
+  document.getElementById('setup-toggle').classList.toggle('open');
 }
 
 function saveSheetUrl() {
   const val = document.getElementById('sheet-url-input').value.trim();
   if (!val.startsWith('https://script.google.com')) {
-    showToast('❌ Paste your Apps Script deployment URL', 'error');
-    return;
+    showToast('❌ Paste your Apps Script deployment URL', 'error'); return;
   }
   SHEET_URL = val;
   localStorage.setItem('sheetUrl', SHEET_URL);
@@ -690,13 +530,9 @@ function saveSheetUrl() {
 
 // ─── QR SCANNER ───────────────────────────────────────────────────────────
 async function toggleScanner() {
-  if (scannerActive) {
-    stopScanner();
-    return;
-  }
+  if (scannerActive) { stopScanner(); return; }
 
-  const readerEl = document.getElementById('qr-reader');
-  readerEl.classList.add('active');
+  document.getElementById('qr-reader').classList.add('active');
   document.getElementById('scan-hint').style.display = 'block';
   const btn = document.getElementById('scan-btn');
   btn.classList.add('scanning');
@@ -709,10 +545,40 @@ async function toggleScanner() {
       { facingMode: "environment" },
       { fps: 10, qrbox: { width: 220, height: 220 } },
       (decodedText) => {
-        document.getElementById('equipment-id').value = decodedText;
-        document.getElementById('scanned-badge').classList.add('visible');
+        // Try to parse as our URL format
+        try {
+          const url = new URL(decodedText);
+          const params = new URLSearchParams(url.search);
+          const scannedId = params.get('id');
+          const scannedName = params.get('name');
+          if (scannedId) {
+            document.getElementById('equipment-id').value = scannedId;
+            document.getElementById('field-id').classList.add('autofilled');
+          }
+          if (scannedName) {
+            document.getElementById('equipment-name').value = scannedName;
+            document.getElementById('field-name').classList.add('autofilled');
+          }
+          if (scannedId || scannedName) {
+            document.getElementById('scanned-badge').classList.add('visible');
+            const banner = document.getElementById('autofill-banner');
+            const sub = document.getElementById('autofill-banner-sub');
+            banner.classList.add('visible');
+            sub.textContent = `${scannedId || ''}${scannedId && scannedName ? ' — ' : ''}${scannedName || ''}`;
+            showToast('✓ Equipment loaded: ' + (scannedId || scannedName), 'success');
+          } else {
+            // Plain text QR — just fill ID field
+            document.getElementById('equipment-id').value = decodedText;
+            document.getElementById('scanned-badge').classList.add('visible');
+            showToast('✓ QR scanned: ' + decodedText, 'success');
+          }
+        } catch(e) {
+          // Not a URL — fill as plain ID
+          document.getElementById('equipment-id').value = decodedText;
+          document.getElementById('scanned-badge').classList.add('visible');
+          showToast('✓ QR scanned: ' + decodedText, 'success');
+        }
         stopScanner();
-        showToast('✓ QR scanned: ' + decodedText, 'success');
       },
       () => {}
     );
@@ -741,21 +607,12 @@ function updateUrgency() {
   const ind = document.getElementById('urgency-indicator');
   const val = sel.value;
   sel.className = '';
-  if (val.includes('Low')) {
-    ind.style.cssText = 'width:25%;background:#2ecc71;height:3px;transition:width .4s,background .3s;';
-    sel.className = 'urgency-low';
-  } else if (val.includes('Medium')) {
-    ind.style.cssText = 'width:50%;background:#f5a623;height:3px;transition:width .4s,background .3s;';
-    sel.className = 'urgency-medium';
-  } else if (val.includes('High')) {
-    ind.style.cssText = 'width:75%;background:#ff8c00;height:3px;transition:width .4s,background .3s;';
-    sel.className = 'urgency-high';
-  } else if (val.includes('Critical')) {
-    ind.style.cssText = 'width:100%;background:#e74c3c;height:3px;transition:width .4s,background .3s;';
-    sel.className = 'urgency-critical';
-  } else {
-    ind.style.cssText = 'width:0%;height:3px;transition:width .4s,background .3s;';
-  }
+  const styles = 'height:3px;transition:width .4s,background .3s;';
+  if (val.includes('Low')) { ind.style.cssText = `width:25%;background:#2ecc71;${styles}`; sel.className = 'urgency-low'; }
+  else if (val.includes('Medium')) { ind.style.cssText = `width:50%;background:#f5a623;${styles}`; sel.className = 'urgency-medium'; }
+  else if (val.includes('High')) { ind.style.cssText = `width:75%;background:#ff8c00;${styles}`; sel.className = 'urgency-high'; }
+  else if (val.includes('Critical')) { ind.style.cssText = `width:100%;background:#e74c3c;${styles}`; sel.className = 'urgency-critical'; }
+  else { ind.style.cssText = `width:0%;${styles}`; }
 }
 
 // ─── PHOTO ────────────────────────────────────────────────────────────────
@@ -789,11 +646,7 @@ async function submitForm() {
   if (!name) { showToast('⚠ Equipment Name is required', 'error'); return; }
   if (!issue) { showToast('⚠ Please describe what needs repaired', 'error'); return; }
   if (!urgency) { showToast('⚠ Please select urgency level', 'error'); return; }
-
-  if (!SHEET_URL) {
-    showToast('⚠ Set up your Google Sheet URL first (tap ⚙)', 'error');
-    return;
-  }
+  if (!SHEET_URL) { showToast('⚠ Set up your Google Sheet URL first (tap ⚙)', 'error'); return; }
 
   const btn = document.getElementById('submit-btn');
   btn.classList.add('loading');
@@ -810,12 +663,10 @@ async function submitForm() {
 
   try {
     await fetch(SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
+      method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-
     showToast('✓ Work order submitted!', 'success');
     resetForm();
   } catch (err) {
@@ -832,6 +683,9 @@ function resetForm() {
   document.getElementById('issue').value = '';
   document.getElementById('urgency').value = '';
   document.getElementById('scanned-badge').classList.remove('visible');
+  document.getElementById('autofill-banner').classList.remove('visible');
+  document.getElementById('field-id').classList.remove('autofilled');
+  document.getElementById('field-name').classList.remove('autofilled');
   updateUrgency();
   removePhoto();
 }
@@ -841,9 +695,7 @@ function showToast(msg, type = '') {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className = 'toast ' + type;
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => t.classList.add('show'));
-  });
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('show')));
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 </script>
